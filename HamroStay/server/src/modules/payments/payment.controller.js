@@ -27,4 +27,10 @@ const refundPayment = asyncHandler(async (req, res) => {
   res.json(apiResponse(true, "Refund initiated.", refund));
 });
 
-module.exports = { createCheckoutSession, webhook, getPaymentHistory, refundPayment };
+const verifyPayment = asyncHandler(async (req, res) => {
+  const { sessionId } = req.params;
+  const verification = await paymentService.verifyPayment(sessionId, req.user.id);
+  res.json(apiResponse(true, "Payment verified.", verification));
+});
+
+module.exports = { createCheckoutSession, webhook, getPaymentHistory, refundPayment, verifyPayment };

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { DollarSign, BedDouble, BookOpen, Users, TrendingUp, Clock } from "lucide-react";
+import { CurrencyRupee, BedDouble, BookOpen, Users, TrendingUp, Clock } from "lucide-react";
 import { fnmisApi } from "../../api/allApis";
 import { bookingApi } from "../../api/bookingApi";
 import StatsCard from "../../components/dashboard/StatsCard";
@@ -47,7 +47,7 @@ export default function AdminDashboard() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
-        <StatsCard title="Monthly Revenue"   value={kpi.revenue?.current?.toFixed(0) || 0} icon={DollarSign} prefix="$" change={kpi.revenue?.growth} changeLabel="vs last month" color="gold" />
+        <StatsCard title="Monthly Revenue"   value={kpi.revenue?.current?.toFixed(0) || 0} icon={CurrencyRupee} prefix="रू" change={kpi.revenue?.growth} changeLabel="vs last month" color="gold" />
         <StatsCard title="Occupancy Rate"    value={kpi.occupancy?.rate || 0}               icon={BedDouble}  suffix="%" color="blue" />
         <StatsCard title="New Bookings"      value={kpi.bookings?.thisMonth || 0}           icon={BookOpen}   color="green" />
         <StatsCard title="Total Customers"   value={kpi.customers || 0}                     icon={Users}      color="purple" />
@@ -59,7 +59,7 @@ export default function AdminDashboard() {
           { label: "Pending Bookings", value: kpi.bookings?.pending || 0,           icon: Clock,       color: "text-yellow-400", bg: "bg-yellow-500/10" },
           { label: "Checked In",       value: kpi.occupancy?.checkedIn || 0,         icon: BedDouble,   color: "text-blue-400",   bg: "bg-blue-500/10" },
           { label: "Active Vendors",   value: kpi.vendors || 0,                     icon: TrendingUp,  color: "text-emerald-400",bg: "bg-emerald-500/10" },
-          { label: "Net Profit",       value: `$${(kpi.netProfit || 0).toFixed(0)}`,icon: DollarSign,  color: "text-gold-400",   bg: "bg-gold-500/10" },
+          { label: "Net Profit",       value: `रू${(kpi.netProfit || 0).toFixed(0)}`,icon: CurrencyRupee,  color: "text-gold-400",   bg: "bg-gold-500/10" },
         ].map(({ label, value, icon: Icon, color, bg }) => (
           <div key={label} className="card p-4 flex items-center gap-3">
             <div className={`w-9 h-9 rounded-lg ${bg} flex items-center justify-center`}>
@@ -93,9 +93,9 @@ export default function AdminDashboard() {
                 <XAxis dataKey="date" tick={{ fill: "#666", fontSize: 11 }} tickLine={false} axisLine={false}
                   tickFormatter={v => v.slice(5)} />
                 <YAxis tick={{ fill: "#666", fontSize: 11 }} tickLine={false} axisLine={false}
-                  tickFormatter={v => `$${v}`} />
+                  tickFormatter={v => `रू${v}`} />
                 <Tooltip contentStyle={{ background: "#1a1a1a", border: "1px solid rgba(212,175,55,0.2)", borderRadius: "8px", color: "#f5f5f5" }}
-                  formatter={v => [`$${v.toFixed(2)}`, "Revenue"]} />
+                  formatter={v => [`रू${v.toFixed(2)}`, "Revenue"]} />
                 <Area type="monotone" dataKey="amount" stroke="#D4AF37" strokeWidth={2} fill="url(#goldGrad)" />
               </AreaChart>
             </ResponsiveContainer>
@@ -115,7 +115,7 @@ export default function AdminDashboard() {
                     {roomTypeData.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                   </Pie>
                   <Tooltip contentStyle={{ background: "#1a1a1a", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "8px", color: "#f5f5f5" }}
-                    formatter={v => [`$${v.toFixed(0)}`, "Revenue"]} />
+                    formatter={v => [`रू${v.toFixed(0)}`, "Revenue"]} />
                 </PieChart>
               </ResponsiveContainer>
               <div className="space-y-2 mt-2">
@@ -125,7 +125,7 @@ export default function AdminDashboard() {
                       <span className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: COLORS[i % COLORS.length] }} />
                       <span className="text-dark-300 text-xs">{d.type}</span>
                     </div>
-                    <span className="text-white text-xs font-medium">${d.revenue.toFixed(0)}</span>
+                    <span className="text-white text-xs font-medium">रू{d.revenue.toFixed(0)}</span>
                   </div>
                 ))}
               </div>
@@ -154,7 +154,7 @@ export default function AdminDashboard() {
                   <td className="table-cell text-sm">{b.user?.name}</td>
                   <td className="table-cell text-sm">{b.room?.name}</td>
                   <td className="table-cell text-xs">{fmtDate(b.checkIn)}</td>
-                  <td className="table-cell text-gold-400 font-semibold">${b.finalAmount?.toFixed(0)}</td>
+                  <td className="table-cell text-gold-400 font-semibold">रू${b.finalAmount?.toFixed(0)}</td>
                   <td className="table-cell">
                     <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${STATUS_COLORS[b.status]}`}>{b.status}</span>
                   </td>

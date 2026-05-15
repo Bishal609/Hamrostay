@@ -1,15 +1,24 @@
 import { useState, useRef, useEffect } from "react";
-import { MessageCircle, X, Send, Trash2, Bot, User, Plus } from "lucide-react";
+import { MessageCircle, X, Send, Trash2, Bot, User, Plus, Sparkles, Loader } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { chatApi } from "../../api/allApis";
 import { formatDistanceToNow } from "date-fns";
 
+// Quick suggestion prompts for the chatbot
+const QUICK_SUGGESTIONS = [
+  { icon: "🛏️", text: "Room types & pricing", prompt: "What room types do you have and their pricing?" },
+  { icon: "📅", text: "Book a room", prompt: "I'd like to book a room. What are the available dates and special offers?" },
+  { icon: "🌟", text: "Special services", prompt: "What special services do you offer (honeymoon, events, etc)?" },
+  { icon: "🗺️", text: "Local attractions", prompt: "What attractions and activities are nearby?" },
+];
+
 export default function ChatWidget() {
-  const [open, setOpen]         = useState(false);
-  const [input, setInput]       = useState("");
-  const [sessionId, setSessionId] = useState(null);
+  const [open, setOpen]              = useState(false);
+  const [input, setInput]            = useState("");
+  const [sessionId, setSessionId]    = useState(null);
+  const [showSuggestions, setShowSuggestions] = useState(true);
   const [messages, setMessages] = useState([
-    { role: "assistant", content: "Namaste! 🙏 I'm HamroBot, your personal concierge. How may I assist you today?", createdAt: new Date() }
+    { role: "assistant", content: "Namaste! 🙏 I'm HamroBot, your personal AI concierge. How may I assist you today?", createdAt: new Date() }
   ]);
   const bottomRef = useRef(null);
   const inputRef  = useRef(null);
@@ -27,6 +36,7 @@ export default function ChatWidget() {
     mutationFn: (data) => chatApi.sendMessage(data).then(r => r.data.data),
     onMutate: (vars) => {
       setMessages(prev => [...prev, { role: "user", content: vars.message, createdAt: new Date() }]);
+      setShowSuggestions(false);
     },
     onSuccess: (data) => {
       setSessionId(data.sessionId);
@@ -45,13 +55,25 @@ export default function ChatWidget() {
     sendMutation.mutate({ message: msg, sessionId });
   };
 
+  const handleSuggestion = (suggestion) => {
+    setInput(suggestion.prompt);
+    setTimeout(() => {
+      sendMutation.mutate({ message: suggestion.prompt, sessionId });
+    }, 0);
+  };
+
   const handleKeyDown = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); }
+    if (e.key === "Enter" && !e.shiftKey) { 
+      e.preventDefault(); 
+      handleSend(); 
+    }
   };
 
   const handleNewChat = () => {
     setSessionId(null);
     setMessages([{ role: "assistant", content: "Namaste! 🙏 Starting a fresh conversation. How can I help you?", createdAt: new Date() }]);
+    setShowSuggestions(true);
+    setInput("");
   };
 
   return (
@@ -71,7 +93,9 @@ export default function ChatWidget() {
               <Bot className="w-5 h-5 text-dark-950" />
             </div>
             <div className="flex-1">
-              <p className="text-sm font-semibold text-white">HamroBot</p>
+              <p className="text-sm font-semibold text-white flex items-center gap-2">
+                HamroBot <Sparkles className="w-3 h-3 text-gold-400" />
+              </p>
               <div className="flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                 <span className="text-xs text-dark-400">AI Concierge • Online</span>
@@ -92,7 +116,7 @@ export default function ChatWidget() {
                   {msg.role === "assistant" ? <Bot className="w-3.5 h-3.5" /> : <User className="w-3.5 h-3.5" />}
                 </div>
                 <div className={`max-w-[78%] ${msg.role === "user" ? "items-end" : "items-start"} flex flex-col gap-1`}>
-                  <div className={`px-3 py-2 rounded-2xl text-sm leading-relaxed ${
+                  <div className={`px-3 py-2 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap ${
                     msg.role === "assistant"
                       ? "bg-dark-800 text-dark-100 rounded-tl-sm border border-white/5"
                       : "bg-gold-500 text-dark-950 font-medium rounded-tr-sm"
@@ -105,6 +129,25 @@ export default function ChatWidget() {
                 </div>
               </div>
             ))}
+
+            {/* Quick suggestions - shown only when appropriate */}
+            {showSuggestions && messages.length <= 1 && (
+              <div className="mt-4 space-y-2 pt-2 border-t border-white/5">
+                <p className="text-xs text-dark-400 font-semibold px-2">Quick questions:</p>
+                {QUICK_SUGGESTIONS.map((suggestion, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => handleSuggestion(suggestion)}
+                    disabled={sendMutation.isPending}
+                    className="w-full text-left px-3 py-2 rounded-lg bg-dark-800 hover:bg-dark-700 border border-white/5 hover:border-gold-500/30 transition-all text-sm text-dark-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <span className="mr-2">{suggestion.icon}</span>
+                    {suggestion.text}
+                  </button>
+                ))}
+              </div>
+            )}
+
             {sendMutation.isPending && (
               <div className="flex gap-2.5">
                 <div className="w-7 h-7 rounded-full bg-gold-gradient flex items-center justify-center flex-shrink-0">
@@ -138,7 +181,7 @@ export default function ChatWidget() {
               />
               <button onClick={handleSend} disabled={!input.trim() || sendMutation.isPending}
                 className="w-10 h-10 rounded-xl bg-gold-500 hover:bg-gold-400 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-all duration-200 flex-shrink-0">
-                <Send className="w-4 h-4 text-dark-950" />
+                {sendMutation.isPending ? <Loader className="w-4 h-4 text-dark-950 animate-spin" /> : <Send className="w-4 h-4 text-dark-950" />}
               </button>
             </div>
             <p className="text-[10px] text-dark-500 text-center mt-2">Powered by Groq AI · LLaMA 3</p>

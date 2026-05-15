@@ -36,7 +36,7 @@ export default function CustomerDashboard() {
           { icon: BookOpen,    label: "Total Bookings",  value: stats.total,     color: "text-blue-400",    bg: "bg-blue-500/10" },
           { icon: Clock,       label: "Confirmed",       value: stats.confirmed, color: "text-emerald-400", bg: "bg-emerald-500/10" },
           { icon: Star,        label: "Currently In",    value: stats.checkedIn, color: "text-gold-400",    bg: "bg-gold-500/10" },
-          { icon: CreditCard,  label: "Total Spent",     value: `$${stats.spent.toFixed(0)}`, color: "text-purple-400", bg: "bg-purple-500/10" },
+          { icon: CreditCard,  label: "Total Spent",     value: `रू${stats.spent.toFixed(0)}`, color: "text-purple-400", bg: "bg-purple-500/10" },
         ].map(({ icon: Icon, label, value, color, bg }) => (
           <div key={label} className="card p-5 flex items-center gap-4">
             <div className={`w-10 h-10 rounded-xl ${bg} flex items-center justify-center flex-shrink-0`}>
@@ -86,7 +86,7 @@ export default function CustomerDashboard() {
                     </td>
                     <td className="table-cell text-xs">{fmtDate(b.checkIn)}</td>
                     <td className="table-cell text-xs">{fmtDate(b.checkOut)}</td>
-                    <td className="table-cell font-semibold text-gold-400">${b.finalAmount.toFixed(0)}</td>
+                    <td className="table-cell font-semibold text-gold-400">रू${b.finalAmount.toFixed(0)}</td>
                     <td className="table-cell">
                       <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${STATUS_COLORS[b.status]}`}>{b.status}</span>
                     </td>

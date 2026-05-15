@@ -59,7 +59,7 @@ export default function VendorOrders() {
                   <p className="text-dark-400 text-xs">{fmtDate(o.createdAt)} · Requested by: {o.requestedBy}</p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-gold-400 font-bold">${o.totalAmount.toFixed(2)}</span>
+                  <span className="text-gold-400 font-bold">रू${o.totalAmount.toFixed(2)}</span>
                   <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${STATUS_COLORS[o.status] || ""}`}>{o.status}</span>
                 </div>
               </div>
@@ -71,8 +71,8 @@ export default function VendorOrders() {
                     <span className="text-dark-200">{item.inventory?.itemName}</span>
                     <div className="flex items-center gap-4 text-xs text-dark-400">
                       <span>Qty: <span className="text-white">{item.quantity} {item.inventory?.unit}</span></span>
-                      <span>@${item.unitPrice}</span>
-                      <span className="text-gold-400 font-medium">${item.subtotal.toFixed(2)}</span>
+                      <span>@रू${item.unitPrice}</span>
+                      <span className="text-gold-400 font-medium">रू${item.subtotal.toFixed(2)}</span>
                     </div>
                   </div>
                 ))}

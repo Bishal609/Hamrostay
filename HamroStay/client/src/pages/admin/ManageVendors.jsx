@@ -148,7 +148,7 @@ export default function ManageVendors() {
                     {orderData.orders.slice(0,5).map(o => (
                       <div key={o.id} className="flex justify-between items-center p-2.5 rounded-xl bg-dark-800/50 text-xs">
                         <span className="text-dark-300 font-mono">{o.orderRef?.slice(0,8)}</span>
-                        <span className="text-gold-400">${o.totalAmount.toFixed(0)}</span>
+                        <span className="text-gold-400">रू${o.totalAmount.toFixed(0)}</span>
                         <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${
                           o.status === "DELIVERED" ? "text-emerald-400" :
                           o.status === "CANCELLED" ? "text-red-400" : "text-yellow-400"

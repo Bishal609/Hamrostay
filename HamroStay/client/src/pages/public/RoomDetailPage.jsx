@@ -180,11 +180,11 @@ export default function RoomDetailPage() {
               <div className="mb-4">
                 {room.discount > 0 ? (
                   <div>
-                    <span className="text-dark-500 line-through text-sm">${room.pricePerNight}/night</span>
-                    <p className="text-3xl font-bold text-gold-400">${(room.pricePerNight * (1 - room.discount / 100)).toFixed(0)}<span className="text-base font-normal text-dark-400">/night</span></p>
+                    <span className="text-dark-500 line-through text-sm">रू${room.pricePerNight}/night</span>
+                    <p className="text-3xl font-bold text-gold-400">रू${(room.pricePerNight * (1 - room.discount / 100)).toFixed(0)}<span className="text-base font-normal text-dark-400">/night</span></p>
                   </div>
                 ) : (
-                  <p className="text-3xl font-bold text-gold-400">${room.pricePerNight}<span className="text-base font-normal text-dark-400">/night</span></p>
+                  <p className="text-3xl font-bold text-gold-400">रू${room.pricePerNight}<span className="text-base font-normal text-dark-400">/night</span></p>
                 )}
                 <p className="text-xs text-dark-400 mt-1">+ 13% VAT</p>
               </div>
@@ -221,16 +221,16 @@ export default function RoomDetailPage() {
               {nights > 0 && (
                 <div className="bg-dark-800/50 rounded-xl p-4 mb-4 space-y-2 text-sm">
                   <div className="flex justify-between text-dark-300">
-                    <span>${(room.pricePerNight * (1 - (room.discount || 0)/100)).toFixed(0)} × {nights} night{nights>1?"s":""}</span>
-                    <span>${baseAmount.toFixed(2)}</span>
+                    <span>रू${(room.pricePerNight * (1 - (room.discount || 0)/100)).toFixed(0)} × {nights} night{nights>1?"s":""}</span>
+                    <span>रू${baseAmount.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-dark-300">
                     <span>Taxes (13% VAT)</span>
-                    <span>${taxAmount.toFixed(2)}</span>
+                    <span>रू${taxAmount.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between font-bold text-white border-t border-white/10 pt-2">
                     <span>Total</span>
-                    <span className="text-gold-400">${finalAmount.toFixed(2)}</span>
+                    <span className="text-gold-400">रू${finalAmount.toFixed(2)}</span>
                   </div>
                 </div>
               )}

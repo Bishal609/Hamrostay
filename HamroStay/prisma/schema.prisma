@@ -178,7 +178,7 @@ model Payment {
   stripeSessionId   String        @unique
   stripePaymentId   String?
   amount            Float
-  currency          String        @default("usd")
+  currency          String        @default("npr")
   status            PaymentStatus @default(PENDING)
   paidAt            DateTime?
   refundedAt        DateTime?
@@ -405,7 +405,7 @@ model HotelSettings {
   checkInTime   String    @default("14:00")
   checkOutTime  String    @default("12:00")
   taxRate       Float     @default(13) // 13% VAT Nepal
-  currency      String    @default("USD")
+  currency      String    @default("NPR")
   socialLinks   Json?
   policies      Json?
 

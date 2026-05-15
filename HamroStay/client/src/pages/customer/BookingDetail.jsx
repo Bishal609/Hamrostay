@@ -79,11 +79,11 @@ export default function BookingDetail() {
       <div className="card p-5">
         <h3 className="font-semibold text-white mb-4">Payment Summary</h3>
         <div className="space-y-2 text-sm">
-          {[["Subtotal",`$${booking.totalAmount?.toFixed(2)}`],["Discount",`-$${booking.discountAmount?.toFixed(2)}`],["Tax (13% VAT)",`$${booking.taxAmount?.toFixed(2)}`]].map(([l,v])=>(
+          {[["Subtotal",`रू${booking.totalAmount?.toFixed(2)}`],["Discount",`-रू${booking.discountAmount?.toFixed(2)}`],["Tax (13% VAT)",`रू${booking.taxAmount?.toFixed(2)}`]].map(([l,v])=>(
             <div key={l} className="flex justify-between text-dark-300"><span>{l}</span><span>{v}</span></div>
           ))}
           <div className="flex justify-between font-bold text-white border-t border-white/10 pt-2">
-            <span>Total</span><span className="text-gold-400">${booking.finalAmount?.toFixed(2)}</span>
+            <span>Total</span><span className="text-gold-400">रू${booking.finalAmount?.toFixed(2)}</span>
           </div>
           {booking.payment && (
             <div className="flex justify-between text-xs text-dark-400 pt-1">

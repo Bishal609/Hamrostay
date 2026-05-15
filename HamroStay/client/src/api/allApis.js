@@ -9,6 +9,13 @@ export const chatApi = {
   deleteSession:      (sessionId) => axiosInstance.delete(`/chat/sessions/${sessionId}`),
 };
 
+export const paymentApi = {
+  createSession:  (bookingId)      => axiosInstance.post("/payments/checkout", { bookingId }),
+  getHistory:     ()               => axiosInstance.get("/payments/history"),
+  refund:         (data)           => axiosInstance.post("/payments/refund", data),
+  verifyPayment:  (sessionId)      => axiosInstance.get(`/payments/verify/${sessionId}`),
+};
+
 export const vendorApi = {
   getVendors:          (params)               => axiosInstance.get("/vendors", { params }),
   getVendorById:       (id)                   => axiosInstance.get(`/vendors/${id}`),
@@ -41,4 +48,12 @@ export const userApi = {
   toggleUserStatus:      (id)     => axiosInstance.patch(`/users/${id}/toggle-status`),
   getNotifications:      ()       => axiosInstance.get("/users/notifications"),
   markNotificationsRead: ()       => axiosInstance.put("/users/notifications/read"),
+};
+
+export const bookingApi = {
+  createBooking:       (data)         => axiosInstance.post("/bookings", data),
+  getBookings:         (params)       => axiosInstance.get("/bookings", { params }),
+  getBookingById:      (id)           => axiosInstance.get(`/bookings/${id}`),
+  updateBookingStatus: (id, status)   => axiosInstance.put(`/bookings/${id}/status`, { status }),
+  cancelBooking:       (id)           => axiosInstance.delete(`/bookings/${id}`),
 };

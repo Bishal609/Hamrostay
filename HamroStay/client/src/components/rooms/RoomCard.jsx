@@ -103,15 +103,15 @@ export default function RoomCard({ room }) {
           <div>
             {discountedPrice ? (
               <div>
-                <span className="text-xs text-dark-500 line-through">${room.pricePerNight}</span>
+                <span className="text-xs text-dark-500 line-through">रू{room.pricePerNight}</span>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-xl font-bold text-gold-400">${discountedPrice.toFixed(0)}</span>
+                  <span className="text-xl font-bold text-gold-400">रू{discountedPrice.toFixed(0)}</span>
                   <span className="text-xs text-dark-400">/ night</span>
                 </div>
               </div>
             ) : (
               <div className="flex items-baseline gap-1">
-                <span className="text-xl font-bold text-gold-400">${room.pricePerNight}</span>
+                <span className="text-xl font-bold text-gold-400">रू{room.pricePerNight}</span>
                 <span className="text-xs text-dark-400">/ night</span>
               </div>
             )}

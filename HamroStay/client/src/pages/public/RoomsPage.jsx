@@ -93,11 +93,11 @@ export default function RoomsPage() {
             </div>
             <div>
               <label className="label text-xs">Min Price/Night</label>
-              <input type="number" placeholder="$0" value={minPrice} onChange={e => { setMinPrice(e.target.value); setPage(1); }} className="input text-sm" />
+              <input type="number" placeholder="रू0" value={minPrice} onChange={e => { setMinPrice(e.target.value); setPage(1); }} className="input text-sm" />
             </div>
             <div>
               <label className="label text-xs">Max Price/Night</label>
-              <input type="number" placeholder="$999" value={maxPrice} onChange={e => { setMaxPrice(e.target.value); setPage(1); }} className="input text-sm" />
+              <input type="number" placeholder="रू999" value={maxPrice} onChange={e => { setMaxPrice(e.target.value); setPage(1); }} className="input text-sm" />
             </div>
             <div>
               <label className="label text-xs">Min Capacity</label>

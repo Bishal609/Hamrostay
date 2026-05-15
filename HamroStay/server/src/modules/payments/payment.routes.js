@@ -9,8 +9,12 @@ const { authorize } = require("../../middleware/role.middleware");
 router.post("/webhook", paymentController.webhook);
 
 router.use(authenticate);
-router.post("/create-session", paymentController.createCheckoutSession);
+
+// Payment endpoints
+router.post("/checkout", paymentController.createCheckoutSession);
+router.post("/create-session", paymentController.createCheckoutSession); // Alias for backward compatibility
 router.get("/history", paymentController.getPaymentHistory);
 router.post("/refund", authorize("ADMIN"), paymentController.refundPayment);
+router.get("/verify/:sessionId", paymentController.verifyPayment);
 
 module.exports = router;

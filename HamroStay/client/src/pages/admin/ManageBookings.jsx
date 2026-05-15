@@ -76,7 +76,7 @@ export default function ManageBookings() {
                     <td className="table-cell text-sm">{b.room?.name}</td>
                     <td className="table-cell text-xs">{fmtDate(b.checkIn)}</td>
                     <td className="table-cell text-xs">{fmtDate(b.checkOut)}</td>
-                    <td className="table-cell text-gold-400 font-semibold">${b.finalAmount?.toFixed(0)}</td>
+                    <td className="table-cell text-gold-400 font-semibold">रू${b.finalAmount?.toFixed(0)}</td>
                     <td className="table-cell">
                       <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${STATUS_COLORS[b.status]}`}>{b.status}</span>
                     </td>

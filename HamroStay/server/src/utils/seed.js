@@ -81,7 +81,7 @@ async function main() {
       latitude: 27.7172,
       longitude: 85.3131,
       taxRate: 13,
-      currency: "USD",
+        currency: "NPR",
     },
   }).catch(() => {
     return prisma.hotelSettings.create({
@@ -95,7 +95,7 @@ async function main() {
         latitude: 27.7172,
         longitude: 85.3131,
         taxRate: 13,
-        currency: "USD",
+        currency: "NPR",
       },
     });
   });

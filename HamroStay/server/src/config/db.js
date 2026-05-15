@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+const { PrismaClient } = require("@prisma/client");
 
 const globalForPrisma = global;
 
@@ -26,4 +26,4 @@ const connectDB = async () => {
   }
 };
 
-export { prisma, connectDB };
+module.exports = { prisma, connectDB };

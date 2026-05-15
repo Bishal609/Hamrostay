@@ -24,7 +24,7 @@ const createCheckoutSession = async (bookingId, userId) => {
     line_items: [
       {
         price_data: {
-          currency: "usd",
+          currency: "npr",
           product_data: {
             name: `${booking.room.name} — HamroStay`,
             description: `${booking.nights} night(s) | Check-in: ${booking.checkIn.toDateString()} | Ref: ${booking.bookingRef}`,
@@ -48,7 +48,7 @@ const createCheckoutSession = async (bookingId, userId) => {
       bookingId,
       stripeSessionId: session.id,
       amount: booking.finalAmount,
-      currency: "usd",
+      currency: "npr",
       status: "PENDING",
     },
     update: { stripeSessionId: session.id, status: "PENDING" },
@@ -152,4 +152,24 @@ const refundPayment = async (bookingId, reason) => {
   return refund;
 };
 
-module.exports = { createCheckoutSession, handleWebhook, getPaymentHistory, refundPayment };
+const verifyPayment = async (sessionId, userId) => {
+  try {
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    const payment = await prisma.payment.findUnique({ where: { stripeSessionId: sessionId } });
+
+    if (!payment) throw Object.assign(new Error("Payment not found."), { status: 404 });
+    if (payment.booking.userId !== userId) throw Object.assign(new Error("Access denied."), { status: 403 });
+
+    return {
+      bookingId: payment.bookingId,
+      status: payment.status,
+      amount: payment.amount,
+      sessionStatus: session.payment_status,
+    };
+  } catch (error) {
+    if (error.status) throw error;
+    throw Object.assign(new Error("Payment verification failed."), { status: 400 });
+  }
+};
+
+module.exports = { createCheckoutSession, handleWebhook, getPaymentHistory, refundPayment, verifyPayment };

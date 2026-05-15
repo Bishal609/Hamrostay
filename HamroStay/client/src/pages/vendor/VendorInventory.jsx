@@ -85,7 +85,7 @@ export default function VendorInventory() {
                 <div className="grid grid-cols-2 gap-2 text-sm mb-3">
                   <div className="bg-dark-800/50 rounded-lg p-2.5">
                     <p className="text-dark-400 text-xs">Price</p>
-                    <p className="text-gold-400 font-semibold">${item.unitPrice}/{item.unit}</p>
+                    <p className="text-gold-400 font-semibold">रू${item.unitPrice}/{item.unit}</p>
                   </div>
                   <div className={`rounded-lg p-2.5 ${isLow ? "bg-red-500/10" : "bg-dark-800/50"}`}>
                     <p className="text-dark-400 text-xs">Stock</p>
@@ -131,7 +131,7 @@ export default function VendorInventory() {
                   </select>
                 </div>
                 <div>
-                  <label className="label text-xs">Unit Price ($)</label>
+                  <label className="label text-xs">Unit Price (रू)</label>
                   <input type="number" min="0" step="0.01" value={form.unitPrice} onChange={e => setForm({...form, unitPrice: e.target.value})}
                     required className="input text-sm" />
                 </div>

@@ -60,7 +60,7 @@ export default function VendorDashboard() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { icon: ShoppingCart, label: "Total Orders",     value: profile.totalOrders,          color: "text-blue-400",    bg: "bg-blue-500/10" },
-          { icon: TrendingUp,   label: "Revenue (Delivered)", value: `$${revenue.toFixed(0)}`,  color: "text-gold-400",    bg: "bg-gold-500/10" },
+          { icon: TrendingUp,   label: "Revenue (Delivered)", value: `रू${revenue.toFixed(0)}`,  color: "text-gold-400",    bg: "bg-gold-500/10" },
           { icon: Package,      label: "Inventory Items",  value: profile.inventory?.length || 0, color: "text-purple-400",  bg: "bg-purple-500/10" },
           { icon: AlertTriangle,label: "Low Stock Items",  value: lowStock.length,               color: "text-red-400",     bg: "bg-red-500/10" },
         ].map(({ icon: Icon, label, value, color, bg }) => (
@@ -89,7 +89,7 @@ export default function VendorDashboard() {
                 <div key={item.id} className="flex items-center justify-between p-3 rounded-xl bg-red-500/5 border border-red-500/15">
                   <div>
                     <p className="text-sm font-medium text-white">{item.itemName}</p>
-                    <p className="text-xs text-dark-400">${item.unitPrice}/{item.unit}</p>
+                    <p className="text-xs text-dark-400">रू${item.unitPrice}/{item.unit}</p>
                   </div>
                   <div className="text-right">
                     <p className="text-red-400 font-bold text-lg">{item.stock}</p>
@@ -122,7 +122,7 @@ export default function VendorDashboard() {
                     <p className="text-xs text-dark-400">{fmtDate(o.createdAt)}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-gold-400 font-semibold">${o.totalAmount.toFixed(0)}</p>
+                    <p className="text-gold-400 font-semibold">रू${o.totalAmount.toFixed(0)}</p>
                     <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${STATUS_COLORS[o.status] || ""}`}>{o.status}</span>
                   </div>
                 </div>

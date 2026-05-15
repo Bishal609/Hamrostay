@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus, DollarSign, TrendingUp, BarChart3 } from "lucide-react";
+import { Plus, CurrencyRupee, TrendingUp, BarChart3 } from "lucide-react";
 import { fnmisApi } from "../../api/allApis";
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, CartesianGrid } from "recharts";
 import { fmtDate } from "../../utils/formatDate";
@@ -59,9 +59,9 @@ export default function FnmisDashboard() {
       {/* KPI Row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "Total Revenue",   value: `$${(kpis?.revenue?.current||0).toFixed(0)}`,   change: kpis?.revenue?.growth, icon: DollarSign, color: "text-gold-400",    bg: "bg-gold-500/10" },
-          { label: "Net Profit",      value: `$${(kpis?.netProfit||0).toFixed(0)}`,           icon: TrendingUp,  color: "text-emerald-400", bg: "bg-emerald-500/10" },
-          { label: "Total Expenses",  value: `$${(kpis?.expenses||0).toFixed(0)}`,            icon: BarChart3,   color: "text-red-400",     bg: "bg-red-500/10" },
+          { label: "Total Revenue",   value: `रू${(kpis?.revenue?.current||0).toFixed(0)}`,   change: kpis?.revenue?.growth, icon: CurrencyRupee, color: "text-gold-400",    bg: "bg-gold-500/10" },
+          { label: "Net Profit",      value: `रू${(kpis?.netProfit||0).toFixed(0)}`,           icon: TrendingUp,  color: "text-emerald-400", bg: "bg-emerald-500/10" },
+          { label: "Total Expenses",  value: `रू${(kpis?.expenses||0).toFixed(0)}`,            icon: BarChart3,   color: "text-red-400",     bg: "bg-red-500/10" },
           { label: "Occupancy Rate",  value: `${kpis?.occupancy?.rate||0}%`,                  icon: BarChart3,   color: "text-blue-400",    bg: "bg-blue-500/10" },
         ].map(({ label, value, change, icon: Icon, color, bg }) => (
           <div key={label} className="card p-5">
@@ -89,8 +89,8 @@ export default function FnmisDashboard() {
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
               <XAxis dataKey="date" tick={{fill:"#666",fontSize:11}} tickLine={false} axisLine={false} tickFormatter={v=>v.slice(5)} />
-              <YAxis tick={{fill:"#666",fontSize:11}} tickLine={false} axisLine={false} tickFormatter={v=>`$${v}`} />
-              <Tooltip contentStyle={TOOLTIP_STYLE} formatter={v=>[`$${v.toFixed(2)}`,"Revenue"]} />
+              <YAxis tick={{fill:"#666",fontSize:11}} tickLine={false} axisLine={false} tickFormatter={v=>`रू${v}`} />
+              <Tooltip contentStyle={TOOLTIP_STYLE} formatter={v=>[`रू${v.toFixed(2)}`,"Revenue"]} />
               <Area type="monotone" dataKey="amount" stroke="#D4AF37" strokeWidth={2} fill="url(#rev)" />
             </AreaChart>
           </ResponsiveContainer>
@@ -117,7 +117,7 @@ export default function FnmisDashboard() {
       <div className="card overflow-hidden">
         <div className="flex items-center justify-between p-6 border-b border-white/5">
           <h3 className="font-display font-semibold text-white">Recent Expenses</h3>
-          <p className="text-dark-400 text-sm">Total: <span className="text-white font-semibold">${(expenses?.total||0).toFixed(2)}</span></p>
+          <p className="text-dark-400 text-sm">Total: <span className="text-white font-semibold">रू${(expenses?.total||0).toFixed(2)}</span></p>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -127,7 +127,7 @@ export default function FnmisDashboard() {
                 <tr key={e.id} className="hover:bg-white/2">
                   <td className="table-cell font-medium text-white text-sm">{e.title}</td>
                   <td className="table-cell"><span className="badge-gold text-[10px]">{e.category}</span></td>
-                  <td className="table-cell text-red-400 font-semibold">-${e.amount.toFixed(2)}</td>
+                  <td className="table-cell text-red-400 font-semibold">-रू${e.amount.toFixed(2)}</td>
                   <td className="table-cell text-xs">{fmtDate(e.date)}</td>
                   <td className="table-cell text-xs text-dark-400">{e.description||"—"}</td>
                 </tr>
@@ -149,7 +149,7 @@ export default function FnmisDashboard() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="label text-xs">Amount ($)</label>
+                  <label className="label text-xs">Amount (रू)</label>
                   <input type="number" min="0" step="0.01" value={expenseForm.amount} onChange={e=>setExpenseForm({...expenseForm,amount:e.target.value})} className="input text-sm" required />
                 </div>
                 <div>

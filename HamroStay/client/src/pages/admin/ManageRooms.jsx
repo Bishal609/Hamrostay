@@ -97,7 +97,7 @@ export default function ManageRooms() {
                     <td className="table-cell"><span className="badge-gold">{room.type}</span></td>
                     <td className="table-cell text-sm">{room.floor}</td>
                     <td className="table-cell text-sm">{room.capacity}</td>
-                    <td className="table-cell text-gold-400 font-semibold">${room.pricePerNight}</td>
+                    <td className="table-cell text-gold-400 font-semibold">रू${room.pricePerNight}</td>
                     <td className="table-cell"><span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${STATUS_COLORS[room.status]}`}>{room.status}</span></td>
                     <td className="table-cell">{room.isFeatured ? "⭐":"—"}</td>
                     <td className="table-cell">

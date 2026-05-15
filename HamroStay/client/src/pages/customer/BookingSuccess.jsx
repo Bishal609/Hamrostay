@@ -33,7 +33,7 @@ export default function BookingSuccess() {
                 ["Check-In",     fmtDate(booking.checkIn)],
                 ["Check-Out",    fmtDate(booking.checkOut)],
                 ["Guests",       booking.guests],
-                ["Total Paid",   `$${booking.finalAmount.toFixed(2)}`],
+                ["Total Paid",   `रू${booking.finalAmount.toFixed(2)}`],
               ].map(([label, value]) => (
                 <div key={label} className="flex justify-between">
                   <span className="text-dark-400">{label}</span>

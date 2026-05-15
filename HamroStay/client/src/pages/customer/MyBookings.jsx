@@ -80,7 +80,7 @@ export default function MyBookings() {
                   <span>Check-in: <span className="text-white">{fmtDate(b.checkIn)}</span></span>
                   <span>Check-out: <span className="text-white">{fmtDate(b.checkOut)}</span></span>
                   <span>Guests: <span className="text-white">{b.guests}</span></span>
-                  <span>Total: <span className="text-gold-400 font-semibold">${b.finalAmount.toFixed(2)}</span></span>
+                  <span>Total: <span className="text-gold-400 font-semibold">रू${b.finalAmount.toFixed(2)}</span></span>
                 </div>
                 <div className="flex gap-2 flex-wrap">
                   <Link to={`/booking/${b.id}`} className="btn-outline-gold text-xs py-1.5 px-3">View Details</Link>

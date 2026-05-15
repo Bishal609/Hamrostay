@@ -43,7 +43,7 @@ const emailTemplates = {
         <p><strong>Check-in:</strong> ${booking.checkIn}</p>
         <p><strong>Check-out:</strong> ${booking.checkOut}</p>
         <p><strong>Guests:</strong> ${booking.guests}</p>
-        <p><strong>Total Amount:</strong> $${booking.finalAmount}</p>
+        <p><strong>Total Amount:</strong> रू${booking.finalAmount}</p>
       </div>
       <p style="color: #aaa; font-size: 13px;">Check-in time: 2:00 PM | Check-out time: 12:00 PM</p>
       <p>We look forward to welcoming you!</p>
