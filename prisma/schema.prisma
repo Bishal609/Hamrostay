@@ -1,0 +1,450 @@
+// server/prisma/schema.prisma
+// HamroStay — Prisma ORM + MongoDB
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────
+// ENUMS
+// ─────────────────────────────────────────
+
+enum Role {
+  ADMIN
+  CUSTOMER
+  VENDOR
+}
+
+enum RoomType {
+  STANDARD
+  DELUXE
+  SUITE
+  PRESIDENTIAL
+  PENTHOUSE
+}
+
+enum RoomStatus {
+  AVAILABLE
+  OCCUPIED
+  MAINTENANCE
+  RESERVED
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CHECKED_IN
+  CHECKED_OUT
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum VendorCategory {
+  FOOD_BEVERAGE
+  HOUSEKEEPING
+  MAINTENANCE
+  LAUNDRY
+  SPA
+  TRANSPORT
+  SECURITY
+  OTHER
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  DELIVERED
+  CANCELLED
+}
+
+enum ExpenseCategory {
+  VENDOR_ORDER
+  UTILITIES
+  MAINTENANCE
+  STAFF_SALARY
+  MARKETING
+  MISCELLANEOUS
+}
+
+// ─────────────────────────────────────────
+// USER
+// ─────────────────────────────────────────
+
+model User {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  email         String    @unique
+  password      String
+  role          Role      @default(CUSTOMER)
+  phone         String?
+  avatar        String?
+  address       String?
+  isActive      Boolean   @default(true)
+  isVerified    Boolean   @default(false)
+  refreshToken  String?
+
+  bookings      Booking[]
+  chatSessions  ChatSession[]
+  notifications Notification[]
+  reviews       Review[]
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([role])
+  @@index([createdAt])
+  @@index([isActive])
+  @@map("users")
+}
+
+// ─────────────────────────────────────────
+// ROOM
+// ─────────────────────────────────────────
+
+model Room {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  roomNumber    String      @unique
+  name          String
+  type          RoomType
+  status        RoomStatus  @default(AVAILABLE)
+  floor         Int
+  capacity      Int
+  pricePerNight Float
+  description   String
+  amenities     String[]
+  images        String[]    // UploadThing URLs
+  size          Float       // sq ft
+  bedType       String
+  viewType      String?
+  isFeatured    Boolean     @default(false)
+  discount      Float       @default(0) // percentage
+
+  bookings      Booking[]
+  reviews       Review[]
+
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@index([status])
+  @@index([type])
+  @@index([pricePerNight])
+  @@index([capacity])
+  @@index([isFeatured])
+  @@index([createdAt])
+  @@map("rooms")
+}
+
+// ─────────────────────────────────────────
+// BOOKING
+// ─────────────────────────────────────────
+
+model Booking {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  bookingRef      String        @unique @default(cuid())
+  userId          String        @db.ObjectId
+  roomId          String        @db.ObjectId
+  checkIn         DateTime
+  checkOut        DateTime
+  nights          Int
+  guests          Int
+  totalAmount     Float
+  discountAmount  Float         @default(0)
+  taxAmount       Float
+  finalAmount     Float
+  status          BookingStatus @default(PENDING)
+  specialRequests String?
+  guestDetails    Json          // { name, email, phone, idType, idNumber }
+
+  user            User          @relation(fields: [userId], references: [id])
+  room            Room          @relation(fields: [roomId], references: [id])
+  payment         Payment?
+
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([userId])
+  @@index([roomId])
+  @@index([status])
+  @@index([checkIn])
+  @@index([checkOut])
+  @@index([createdAt])
+  @@map("bookings")
+}
+
+// ─────────────────────────────────────────
+// PAYMENT
+// ─────────────────────────────────────────
+
+model Payment {
+  id                String        @id @default(auto()) @map("_id") @db.ObjectId
+  bookingId         String        @unique @db.ObjectId
+  stripeSessionId   String        @unique
+  stripePaymentId   String?
+  amount            Float
+  currency          String        @default("npr")
+  status            PaymentStatus @default(PENDING)
+  paidAt            DateTime?
+  refundedAt        DateTime?
+  refundReason      String?
+  receiptUrl        String?
+
+  booking           Booking       @relation(fields: [bookingId], references: [id])
+
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+  @@map("payments")
+}
+
+// ─────────────────────────────────────────
+// VENDOR
+// ─────────────────────────────────────────
+
+model Vendor {
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String          @unique @db.ObjectId
+  businessName  String
+  category      VendorCategory
+  contactPerson String
+  email         String          @unique
+  phone         String
+  address       String
+  logo          String?
+  description   String?
+  rating        Float           @default(0)
+  totalOrders   Int             @default(0)
+  isApproved    Boolean         @default(false)
+  isActive      Boolean         @default(true)
+  bankDetails   Json?           // { bankName, accountNumber, routingNumber }
+  taxId         String?
+
+  orders        VendorOrder[]
+  inventory     VendorInventory[]
+
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  @@index([isApproved])
+  @@index([category])
+  @@index([isActive])
+  @@index([createdAt])
+  @@map("vendors")
+}
+
+model VendorInventory {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  vendorId    String    @db.ObjectId
+  itemName    String
+  description String?
+  unit        String    // kg, litre, piece, etc.
+  unitPrice   Float
+  stock       Int       @default(0)
+  minStock    Int       @default(10)
+  images      String[]
+
+  vendor      Vendor    @relation(fields: [vendorId], references: [id])
+  orderItems  VendorOrderItem[]
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([vendorId])
+  @@index([itemName])
+  @@map("vendor_inventory")
+}
+
+model VendorOrder {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  vendorId      String      @db.ObjectId
+  orderRef      String      @unique @default(cuid())
+  status        OrderStatus @default(PENDING)
+  totalAmount   Float
+  notes         String?
+  deliveredAt   DateTime?
+  requestedBy   String      // Admin user name
+
+  vendor        Vendor      @relation(fields: [vendorId], references: [id])
+  items         VendorOrderItem[]
+
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@index([vendorId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("vendor_orders")
+}
+
+model VendorOrderItem {
+  id          String          @id @default(auto()) @map("_id") @db.ObjectId
+  orderId     String          @db.ObjectId
+  inventoryId String          @db.ObjectId
+  quantity    Int
+  unitPrice   Float
+  subtotal    Float
+
+  order       VendorOrder     @relation(fields: [orderId], references: [id])
+  inventory   VendorInventory @relation(fields: [inventoryId], references: [id])
+
+  @@map("vendor_order_items")
+}
+
+// ─────────────────────────────────────────
+// FNMIS — Finance & Management Info System
+// ─────────────────────────────────────────
+
+model Expense {
+  id          String          @id @default(auto()) @map("_id") @db.ObjectId
+  category    ExpenseCategory
+  title       String
+  amount      Float
+  description String?
+  date        DateTime
+  receipt     String?
+  addedBy     String          // admin user ID
+
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@map("expenses")
+}
+
+model RevenueSnapshot {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  date        DateTime  @unique
+  totalRooms  Int
+  occupiedRooms Int
+  revenue     Float
+  expenses    Float
+  profit      Float
+  occupancyRate Float
+
+  createdAt   DateTime  @default(now())
+
+  @@map("revenue_snapshots")
+}
+
+// ─────────────────────────────────────────
+// CHAT
+// ─────────────────────────────────────────
+
+model ChatSession {
+  id        String      @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String      @db.ObjectId
+  title     String      @default("New Conversation")
+
+  user      User        @relation(fields: [userId], references: [id])
+  messages  ChatMessage[]
+
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@index([userId])
+  @@index([createdAt])
+  @@map("chat_sessions")
+}
+
+model ChatMessage {
+  id        String      @id @default(auto()) @map("_id") @db.ObjectId
+  sessionId String      @db.ObjectId
+  role      String      // "user" | "assistant"
+  content   String
+  tokens    Int?
+
+  session   ChatSession @relation(fields: [sessionId], references: [id])
+
+  createdAt DateTime    @default(now())
+
+  @@map("chat_messages")
+}
+
+// ─────────────────────────────────────────
+// REVIEW
+// ─────────────────────────────────────────
+
+model Review {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String    @db.ObjectId
+  roomId    String    @db.ObjectId
+  rating    Int       // 1-5
+  comment   String
+  images    String[]
+  isVisible Boolean   @default(true)
+
+  user      User      @relation(fields: [userId], references: [id])
+  room      Room      @relation(fields: [roomId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([roomId])
+  @@index([userId])
+  @@index([rating])
+  @@index([createdAt])
+  @@map("reviews")
+}
+
+// ─────────────────────────────────────────
+// NOTIFICATION
+// ─────────────────────────────────────────
+
+model Notification {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String    @db.ObjectId
+  title     String
+  message   String
+  type      String    // booking, payment, system, vendor
+  isRead    Boolean   @default(false)
+  link      String?
+
+  user      User      @relation(fields: [userId], references: [id])
+
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@index([isRead])
+  @@index([createdAt])
+  @@map("notifications")
+}
+
+// ─────────────────────────────────────────
+// HOTEL SETTINGS (singleton)
+// ─────────────────────────────────────────
+
+model HotelSettings {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  hotelName     String    @default("HamroStay")
+  tagline       String?
+  address       String?
+  phone         String?
+  email         String?
+  website       String?
+  logo          String?
+  coverImage    String?
+  latitude      Float?
+  longitude     Float?
+  checkInTime   String    @default("14:00")
+  checkOutTime  String    @default("12:00")
+  taxRate       Float     @default(13) // 13% VAT Nepal
+  currency      String    @default("NPR")
+  socialLinks   Json?
+  policies      Json?
+
+  updatedAt     DateTime  @updatedAt
+
+  @@map("hotel_settings")
+}
